@@ -3,6 +3,7 @@ package com.example.demo.controlador;
 import com.example.demo.repos.ProductoRepositorio;
 import com.example.demo.repos.UsuarioRepositorio;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.modelo.Producto;
@@ -87,5 +88,14 @@ public class ProductoControlador {
     public List<Producto> getProductosByUsuario(@PathVariable Long usuarioId) {
         return productoRepositorio.findByUsuarioId(usuarioId);
     }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(value = {Exception.class})
+    public ResponseEntity<Object> handleException(Exception ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
 }
